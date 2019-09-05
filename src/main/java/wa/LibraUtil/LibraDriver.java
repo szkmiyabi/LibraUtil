@@ -218,11 +218,11 @@ public class LibraDriver {
 				String td_val = td.html();
 				//コメント列はbrタグも含め実体参照デコード
 				if(col_num == 4) {
-					td_val = LibraRepoTextUtil.br_decode(td_val);
-					td_val = LibraRepoTextUtil.tag_decode(td_val);
+					td_val = TextUtil.br_decode(td_val);
+					td_val = TextUtil.tag_decode(td_val);
 				//それ以外は、実体参照のみデコード
 				} else {
-					td_val = LibraRepoTextUtil.tag_decode(td_val);
+					td_val = TextUtil.tag_decode(td_val);
 				}
 				if(td_val.equals("")) {
 					row_datas.add("");
@@ -240,26 +240,26 @@ public class LibraDriver {
 	public void fetch_report_sequential() {
 
 		//header
-		rep_data.add(LibraRepoTextUtil.get_header());
+		rep_data.add(TextUtil.get_header());
 		wd.get(rep_index_url_base + projectID + "/");
-		LibraRepoDateUtil.app_sleep(shortWait);
+		DateUtil.app_sleep(shortWait);
 		
-		List<String> guideline_rows = LibraRepoFiles.open_text_data(guideline_file_name);
+		List<String> guideline_rows = FileUtil.open_text_data(guideline_file_name);
 		Map<String, String> page_rows = get_page_list_data();
 		//guidelineのループ
 		for(int i=0; i<guideline_rows.size(); i++) {			
 			String guideline = guideline_rows.get(i);
 			String guideline_disp = guideline; //println用
 			//jis2016以前の達成基準番号に変換
-			if(!LibraRepoTextUtil.is_jis2016_lower(guideline)) guideline = "7." + guideline;
+			if(!TextUtil.is_jis2016_lower(guideline)) guideline = "7." + guideline;
 			//pageのループ
 			for(Map.Entry<String, String> page_row : page_rows.entrySet()) {
 				String pageID = page_row.getKey();
 				String pageURL = page_row.getValue();
-				System.out.println(pageID + ", " + guideline_disp + " を処理しています。 (" + LibraRepoDateUtil.get_logtime() + ")");
+				System.out.println(pageID + ", " + guideline_disp + " を処理しています。 (" + DateUtil.get_logtime() + ")");
 				String path = fetch_report_detail_path(pageID, guideline);
 				wd.get(path);
-				LibraRepoDateUtil.app_sleep(shortWait);
+				DateUtil.app_sleep(shortWait);
 
 				List<List<String>> tbl_data = get_detail_table_data(pageID, pageURL, guideline);
 				rep_data.addAll(tbl_data);
@@ -272,7 +272,7 @@ public class LibraDriver {
 	public void fetch_report_single(String any_pageID, String any_guideline) {
 
 		wd.get(rep_index_url_base + projectID + "/");
-		LibraRepoDateUtil.app_sleep(shortWait);
+		DateUtil.app_sleep(shortWait);
 		
 		//処理対象PIDデータの処理
 		List<String> qy_page_rows = new ArrayList<String>();
@@ -282,7 +282,7 @@ public class LibraDriver {
 			new_page_rows = page_rows;
 		} else {
 			//ループ用PIDマップの生成
-			if(LibraRepoTextUtil.is_csv(any_pageID)) {
+			if(TextUtil.is_csv(any_pageID)) {
 				String[] tmp_arr = any_pageID.split(",", 0);
 				for(int i=0; i<tmp_arr.length; i++) {
 					qy_page_rows.add(tmp_arr[i]);
@@ -309,9 +309,9 @@ public class LibraDriver {
 		//処理対象ガイドラインデータの処理
 		List<String> guideline_rows = new ArrayList<String>();
 		if(any_guideline == "") {
-			guideline_rows = LibraRepoFiles.open_text_data(guideline_file_name);
+			guideline_rows = FileUtil.open_text_data(guideline_file_name);
 		} else {
-			if(LibraRepoTextUtil.is_csv(any_guideline)) {
+			if(TextUtil.is_csv(any_guideline)) {
 				String[] tmp_arr = any_guideline.split(",", 0);
 				for(int i=0; i<tmp_arr.length; i++) {
 					guideline_rows.add(tmp_arr[i]);
@@ -322,22 +322,22 @@ public class LibraDriver {
 		}
 
 		//header
-		rep_data.add(LibraRepoTextUtil.get_header());
+		rep_data.add(TextUtil.get_header());
 
 		//guidelineのループ
 		for(int i=0; i<guideline_rows.size(); i++) {			
 			String guideline = guideline_rows.get(i);
 			String guideline_disp = guideline; //println用
 			//jis2016以前の達成基準番号に変換
-			if(!LibraRepoTextUtil.is_jis2016_lower(guideline)) guideline = "7." + guideline;
+			if(!TextUtil.is_jis2016_lower(guideline)) guideline = "7." + guideline;
 			//pageのループ
 			for(Map.Entry<String, String> page_row : new_page_rows.entrySet()) {
 				String pageID = page_row.getKey();
 				String pageURL = page_row.getValue();
-				System.out.println(pageID + ", " + guideline_disp + " を処理しています。 (" + LibraRepoDateUtil.get_logtime() + ")");
+				System.out.println(pageID + ", " + guideline_disp + " を処理しています。 (" + DateUtil.get_logtime() + ")");
 				String path = fetch_report_detail_path(pageID, guideline);
 				wd.get(path);
-				LibraRepoDateUtil.app_sleep(shortWait);
+				DateUtil.app_sleep(shortWait);
 				
 				List<List<String>> tbl_data = get_detail_table_data(pageID, pageURL, guideline);
 				rep_data.addAll(tbl_data);
