@@ -279,6 +279,30 @@ public class LibraDriver {
 		jsexe.executeScript(jsc.toString());
 	}
 	
+	//サイト名を取得
+	public String get_site_name() {
+		String sname = "";
+		org.jsoup.nodes.Document dom = get_dom();
+		org.jsoup.nodes.Element tbl = null;
+		org.jsoup.select.Elements tbls = dom.select("table");
+		for(int i=0; i<tbls.size(); i++) {
+			if(i == 1) {
+				tbl = (org.jsoup.nodes.Element)tbls.get(i);
+			}
+		}
+		String tbl_html = tbl.outerHtml();
+		org.jsoup.nodes.Document tbl_dom = Jsoup.parse(tbl_html);
+		org.jsoup.select.Elements tds = tbl_dom.select("tr td");
+		org.jsoup.nodes.Element td = tds.get(0);
+		String td_val = td.text();
+		Pattern pt = Pattern.compile("(\\[)([a-zA-Z0-9]+)(\\])(\\s*)(.+)");
+		Matcher mt = pt.matcher(td_val);
+		if(mt.find()) {
+			sname = mt.group(5);
+		}
+		return sname;
+	}
+	
 	//PID一覧＋URL一覧データ生成
 	public Map<String, String> get_page_list_data() {
 		Map<String, String> datas = new TreeMap<String, String>();

@@ -40,12 +40,11 @@ public class UrlAppMain {
 		//データ配列
 		List<List<String>> datas = new ArrayList<List<String>>();
 		
-		//ログアウト
-		ldr.logout();
-		DateUtil.app_sleep(shortWait);
-		ldr.shutdown();
+		//サイト名
+		String site_name = ldr.get_site_name();
 		
-		System.out.println("テキストファイルの書き出し処理を開始します。(" + DateUtil.get_logtime() + ")");
+		//サイト名
+		String save_filename = projectID + "_" + site_name + " URL.txt";
 
 		//URLのMapデータ取得
 		Map<String, String> page_list = ldr.get_page_list_data();
@@ -58,7 +57,13 @@ public class UrlAppMain {
 			datas.add(tmp_row);
 		}
 		
-		String save_filename = projectID + "_URL_" + DateUtil.fetch_filename_logtime() + ".txt";
+		//ログアウト
+		ldr.logout();
+		DateUtil.app_sleep(shortWait);
+		ldr.shutdown();
+		
+		System.out.println("テキストファイルの書き出し処理を開始します。(" + DateUtil.get_logtime() + ")");
+		
 		FileUtil.write_tsv_data(datas, save_filename);
 		System.out.println("処理が完了しました。(" + DateUtil.get_logtime() + ")");
 

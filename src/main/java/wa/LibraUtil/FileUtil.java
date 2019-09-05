@@ -91,7 +91,7 @@ public class FileUtil {
 				bw.write(row);
 			}
 			bw.close();
-			System.out.println("guideline_datas.txtをリセットできました。");
+			System.out.println("ファイル保存に成功しました。(" + filename + ")");
 		} catch(IOException e) {
 			System.out.println("エラーが発生しました。" + e.getStackTrace());
 		}
