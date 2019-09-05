@@ -1,0 +1,10 @@
+uid: 
+pswd: 
+systemWait: 60
+longWait: 10
+midWait: 6
+shortWait: 3
+os: windows
+driver: chrome
+headless: "yes"
+guidelineLevel: AA
