@@ -81,6 +81,31 @@ public class FileUtil {
 		}
 	}
 	
+	//2次元配列をTSVファイルとして書き込み
+	public static void write_tsv_data(List<List<String>> rows, String filename) {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(filename)));
+			for(int i=0; i<rows.size(); i++) {
+				List<String> cols = rows.get(i);
+				String row = _edit_row_tsv(cols);
+				bw.write(row);
+			}
+			bw.close();
+			System.out.println("guideline_datas.txtをリセットできました。");
+		} catch(IOException e) {
+			System.out.println("エラーが発生しました。" + e.getStackTrace());
+		}
+	}
+	private static String _edit_row_tsv(List<String> row) {
+		String row_str = "";
+		for(int i=0; i<row.size(); i++) {
+			row_str += row.get(i);
+			if(i < (row.size() - 1)) row_str += "\t";
+		}
+		row_str += "\r\n";
+		return row_str;
+	}
+	
 	//ヘルプを表示する
 	public static void write_help() {
 		String body = "";
