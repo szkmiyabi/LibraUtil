@@ -7,7 +7,7 @@ import java.util.Map;
 public class UrlAppMain {
 
 	//PID+URLのTSVファイル出力
-	public static void do_create_url_list(String projectID) {
+	public static void do_create_url_list(String projectID, String operationMode) {
 
 		//設定ファイルの読み込み
 		String[] user_data = FileUtil.getUserProperties("user.yaml");
@@ -32,22 +32,31 @@ public class UrlAppMain {
 		DateUtil.app_sleep(shortWait);
 		
 		System.out.println("URLを取得しています。(" + DateUtil.get_logtime() + ")");
-
+		
 		//レポートindexページ
 		ldr.browse_repo();
 		DateUtil.app_sleep(shortWait);
-		
+
+		//サイト名
+		String site_name = ldr.get_site_name();
+		//サイト名
+		String save_filename = projectID + "_" + site_name + " URL.txt";
 		//データ配列
 		List<List<String>> datas = new ArrayList<List<String>>();
 		
-		//サイト名
-		String site_name = ldr.get_site_name();
-		
-		//サイト名
-		String save_filename = projectID + "_" + site_name + " URL.txt";
-
 		//URLのMapデータ取得
-		Map<String, String> page_list = ldr.get_page_list_data();
+		Map<String, String> page_list = null;
+		
+		//通常はレポートインデックスページから取得
+		if(operationMode.equals("")) {
+			page_list = ldr.get_page_list_data();
+		//検査開始前は検査メインページから取得
+		} else {
+			ldr.browse_sv_mainpage();
+			DateUtil.app_sleep(longWait);
+			page_list = ldr.get_page_list_data_from_sv_page();
+		}
+		
 		for(Map.Entry<String, String> rows : page_list.entrySet()) {
 			String key = rows.getKey();
 			String val = rows.getValue();

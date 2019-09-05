@@ -158,6 +158,11 @@ public class LibraDriver {
 		wd.get(rep_index_url_base + projectID);
 	}
 	
+	//検査メインページ遷移
+	public void browse_sv_mainpage() {
+		wd.get(sv_mainpage_url_base + projectID);
+	}
+	
 	//レポート詳細ページのURL生成
 	public String fetch_report_detail_path(String pageID, String guidelineID) {
 		return rep_detail_url_base + projectID + "/controlID/"  + pageID + "/guideline/" + guidelineID + "/";
@@ -336,6 +341,30 @@ public class LibraDriver {
 			datas.put(pids.get(i), urls.get(i));
 		}
 		return datas;
+	}
+	
+	//PID一覧＋URL一覧データ生成 （検査メイン画面から）
+	public Map<String, String> get_page_list_data_from_sv_page(){
+		Map<String, String> datas = new TreeMap<String, String>();
+		WebElement url_ddl = wd.findElement(By.id("urlList"));
+		List<WebElement> opts = url_ddl.findElements(By.tagName("option"));
+		for(int i=0; i<opts.size(); i++) {
+			WebElement opt = opts.get(i);
+			String key = opt.getAttribute("value");
+			String val = _get_option_urltext(opt);
+			datas.put(key, val);
+		}
+		return datas;
+	}
+	private String _get_option_urltext(WebElement opt) {
+		String ret = "";
+		String val = opt.getText();
+		Pattern pt = Pattern.compile("(\\[[a-zA-Z0-9]+\\] )(.+)");
+		Matcher mt = pt.matcher(val);
+		if(mt.find()) {
+			ret = mt.group(2);
+		}
+		return ret;
 	}
 	
 	//レポート詳細ページから検査結果データを生成

@@ -5,15 +5,19 @@ import gnu.getopt.Getopt;
 public class UrlApp {
 	static String projectID = "";
 	static String operationName = "";
+	static String operationMode = "";
 	static Boolean args_flag = true;
 	
 	public static void main(String[] args) {
 		
     	//コマンドライン引数処理
-    	Getopt options = new Getopt("UrlApp", args, "ht:p:g:o:");
+    	Getopt options = new Getopt("UrlApp", args, "m:o:t:");
     	int c;
     	while( (c = options.getopt()) != -1) {
     		switch(c) {
+    		case 'm':
+    			operationMode = options.getOptarg();
+    			break;
     		case 'o':
     			operationName = options.getOptarg();
     			break;
@@ -32,7 +36,7 @@ public class UrlApp {
     		
     		//PID＋URLのTSVファイル出力
     		if(operationName.equals("")) {
-    			UrlAppMain.do_create_url_list(projectID);
+    			UrlAppMain.do_create_url_list(projectID, operationMode);
     		} else {
     			//PID ONLYの処理
     		}
