@@ -13,6 +13,12 @@ public class DateUtil {
 		return ld.format(dtf_file) + "." + extension;
 	}
 	
+	//ファイル用時刻文字列を生成
+	public static String fetch_filename_logtime() {
+		LocalDateTime ld = LocalDateTime.now();
+		return ld.format(dtf_file);
+	}
+	
 	//ログ出力の時刻文字列を生成
 	public static String get_logtime() {
 		LocalDateTime ld = LocalDateTime.now();
