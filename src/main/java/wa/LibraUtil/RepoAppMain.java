@@ -77,7 +77,7 @@ public class RepoAppMain {
 		}
 		
 		//テキストデータ書き込み
-		FileUtil.write_text_data(guideline_names, "guideline_datas.txt");
+		FileUtil.rewrite_guideline_file(guideline_names, "guideline_datas.txt");
 	}
 
 }

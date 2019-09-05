@@ -37,8 +37,9 @@ public class UrlApp {
     		//PID＋URLのTSVファイル出力
     		if(operationName.equals("")) {
     			UrlAppMain.do_create_url_list(projectID, operationMode);
+    		//PIDのみTEXTファイル出力
     		} else {
-    			//PID ONLYの処理
+    			UrlAppMain.do_create_pid_list(projectID, operationMode);
     		}
     	} else {
     		System.out.println("コマンドライン引数が指定されていないため処理を開始できません。");

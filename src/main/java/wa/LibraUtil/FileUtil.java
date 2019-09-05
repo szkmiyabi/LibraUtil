@@ -64,7 +64,23 @@ public class FileUtil {
 
 		return ret;
 	}
-	
+
+	//ガイドラインファイルをリセット
+	public static void rewrite_guideline_file(String[] rows, String filename) {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(filename)));
+			for(int i=0; i<rows.length; i++) {
+				String row = rows[i];
+				bw.write(row);
+				if(i != (rows.length - 1)) bw.newLine();
+			}
+			bw.close();
+			System.out.println("guideline_datas.txtをリセットできました。");
+		} catch(IOException e) {
+			System.out.println("エラーが発生しました。" + e.getStackTrace());
+		}
+	}
+
 	//配列をテキストファイルとして書き込み
 	public static void write_text_data(String[] rows, String filename) {
 		try {
@@ -75,7 +91,7 @@ public class FileUtil {
 				if(i != (rows.length - 1)) bw.newLine();
 			}
 			bw.close();
-			System.out.println("guideline_datas.txtをリセットできました。");
+			System.out.println("ファイル保存に成功しました。(" + filename + ")");
 		} catch(IOException e) {
 			System.out.println("エラーが発生しました。" + e.getStackTrace());
 		}
