@@ -13,7 +13,7 @@ public class RepoApp {
 	public static void main(String[] args) {
 
     	//コマンドライン引数処理
-    	Getopt options = new Getopt("App", args, "ht:p:g:o:");
+    	Getopt options = new Getopt("RepoApp", args, "ht:p:g:o:");
     	int c;
     	while( (c = options.getopt()) != -1) {
     		switch(c) {
