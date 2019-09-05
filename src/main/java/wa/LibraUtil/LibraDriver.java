@@ -9,9 +9,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -19,6 +22,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.TakesScreenshot;
 
@@ -110,6 +114,21 @@ public class LibraDriver {
 		Path save_path = save_dir.resolve(filename);
 		Files.write(save_path, sc.getScreenshotAs(OutputType.BYTES));
 	}
+
+	//fullpage screenshotを撮る(Firefox Only)
+	public void fullpage_screenshot(String filename) throws Exception {
+		JavascriptExecutor jsexe = (JavascriptExecutor) wd;
+		int require_height = Integer.parseInt(jsexe.executeScript("return document.body.parentNode.scrollHeight").toString());
+		//windowsサイズのheight指定はChromeでは上限がある
+		wd.manage().window().setSize(new Dimension(1280, require_height));
+		DateUtil.app_sleep(longWait);
+		TakesScreenshot sc = (TakesScreenshot) wd;
+		Path save_dir = Paths.get("screenshots");
+		Files.createDirectories(save_dir);
+		Path save_path = save_dir.resolve(filename);
+		Files.write(save_path, sc.getScreenshotAs(OutputType.BYTES));
+		wd.manage().window().setSize(new Dimension(1280, 900));
+	}
 	
 	//シャットダウン
 	public void shutdown() {
@@ -149,6 +168,115 @@ public class LibraDriver {
 		String html_str = wd.getPageSource();
 		org.jsoup.nodes.Document doc = Jsoup.parse(html_str);
 		return doc;
+	}
+	
+	//達成基準番号選択
+	public void select_guideline(String guidelineID) {
+		WebElement guidelineSelect = wd.findElement(By.id("guideline"));
+		List<WebElement> guidelineOptions = guidelineSelect.findElements(By.tagName("option"));
+		for(int i=0; i<guidelineOptions.size(); i++) {
+			WebElement guidelineOP = guidelineOptions.get(i);
+			String guidelineOP_value = guidelineOP.getText();
+			String rgx = guidelineID + ".*";
+			Pattern pt = Pattern.compile(rgx);
+			Matcher mt = pt.matcher(guidelineOP_value);
+			if(mt.find()) {
+				guidelineOP.click();
+				break;
+			}
+		}
+	}
+	
+	//実装番号選択
+	public void select_techlist(String techID) {
+		WebElement techSelect = wd.findElement(By.id("techList"));
+		List<WebElement> techOptions = techSelect.findElements(By.tagName("option"));
+		for(int i=0; i<techOptions.size(); i++) {
+			WebElement techOP = techOptions.get(i);
+			String techOP_value = techOP.getText();
+			String rgx = techID + ".*";
+			Pattern pt = Pattern.compile(rgx);
+			Matcher mt = pt.matcher(techOP_value);
+			if(mt.find()) {
+				techOP.click();
+				wd.findElement(By.id("footer")).click();
+				break;
+			}
+		}
+	}
+	
+	//URL選択
+	public void select_url(String url) {
+		int sample_num = _get_url_list_num(url);
+		wd.findElement(By.id("urlList-" + sample_num)).click();
+		wd.findElement(By.id("submitURL")).click();
+	}
+	private int _get_url_list_num(String url) {
+		int cnt = 0;
+		WebElement urlSelect = wd.findElement(By.id("urlList"));
+		List<WebElement> urlOptions = urlSelect.findElements(By.tagName("option"));
+		for(int i=0; i<urlOptions.size(); i++) {
+			WebElement urlOP = urlOptions.get(i);
+			String urlOP_value = urlOP.getText();
+			String rgx = "\\[.*" + url + ".*?\\]";
+			Pattern pt = Pattern.compile(rgx);
+			Matcher mt = pt.matcher(urlOP_value);
+			if(mt.find()) {
+				break;
+			}
+			cnt++;
+		}
+		return cnt;
+	}
+	
+	//URLが選択されているか判定
+	public boolean is_selected_url(String url) {
+		Select select = new Select(wd.findElement(By.id("urlList")));
+		WebElement opt = select.getFirstSelectedOption();
+		String opt_value = opt.getText();
+		String rgx = "\\[.*" + url + ".*?\\]";
+		Pattern pt = Pattern.compile(rgx);
+		Matcher mt = pt.matcher(opt_value);
+		if(mt.find()) return true;
+		else return false;
+	}
+	
+	//試験結果詳細ビュー選択
+	public void select_sv_detail_tab() {
+		WebElement tabWrap = wd.findElement(By.id("tabsA"));
+		WebElement tabUL = tabWrap.findElements(By.className("ui-tabs-nav")).get(0);
+		WebElement li = tabUL.findElements(By.tagName("li")).get(2);
+		WebElement atag = li.findElements(By.tagName("a")).get(0);
+		atag.click();
+	}
+	
+	//ソースコードビュー選択
+	public void select_sv_srccode_tab() {
+		WebElement tabWrap = wd.findElement(By.id("tabsA"));
+		WebElement tabUL = tabWrap.findElements(By.className("ui-tabs-nav")).get(0);
+		WebElement li = tabUL.findElements(By.tagName("li")).get(1);
+		WebElement atag = li.findElements(By.tagName("a")).get(0);
+		atag.click();
+	}
+	
+	//ページビューを選択
+	public void select_sv_pv_tab() {
+		WebElement tabWrap = wd.findElement(By.id("tabsA"));
+		WebElement tabUL = tabWrap.findElements(By.className("ui-tabs-nav")).get(0);
+		WebElement li = tabUL.findElements(By.tagName("li")).get(0);
+		WebElement atag = li.findElements(By.tagName("a")).get(0);
+		atag.click();
+	}
+	
+	
+	//Libraページビューの高さをスクロールバーなしのheightにする
+	public void pv_height_adjust() {
+		StringBuilder jsc = new StringBuilder();
+		jsc.append("var ifm_h=document.getElementById('sample').contentWindow.document.body.scrollHeight;");
+		jsc.append("var tg=document.getElementsByClassName('view_d')[0];");
+		jsc.append("tg.setAttribute('style', 'height:' + ifm_h + 'px');");
+		JavascriptExecutor jsexe = (JavascriptExecutor) wd;
+		jsexe.executeScript(jsc.toString());
 	}
 	
 	//PID一覧＋URL一覧データ生成
