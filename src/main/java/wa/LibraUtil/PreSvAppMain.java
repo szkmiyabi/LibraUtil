@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.openqa.selenium.JavascriptExecutor;
-
 public class PreSvAppMain {
 
 	//レポート処理実行
@@ -107,9 +105,7 @@ public class PreSvAppMain {
 		} else {
 			operations.add(any_operation);
 		}
-		
-		JavascriptExecutor jsexe = (JavascriptExecutor) ldr.getWd();
-		
+			
 		//PIDのループ処理
 		for(Map.Entry<String, String> rows : new_page_rows.entrySet()) {
 			String pageID = rows.getKey();
@@ -123,7 +119,7 @@ public class PreSvAppMain {
 			} catch (Exception e) {}
 			
 			//img-alt
-			jsexe.executeScript(JsUtil.image_alt());
+			ldr.getJsExe().executeScript(JsUtil.image_alt());
 			DateUtil.app_sleep(midWait);
 			
 			//screenshot

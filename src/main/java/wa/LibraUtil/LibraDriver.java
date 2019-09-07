@@ -101,6 +101,12 @@ public class LibraDriver {
 		return wd;
 	}
 	
+	//JavasciptExecutorのゲッター
+	public JavascriptExecutor getJsExe() {
+		JavascriptExecutor jsx = (JavascriptExecutor) wd;
+		return jsx;
+	}
+	
 	//rep_dataのゲッター
 	public List<List<String>> getRepData() {
 		return rep_data;
