@@ -136,6 +136,8 @@ public class PreSvAppMain {
 				//layerd=falseなら個別screenshot
 				if(layerd_flag == false) {
 					try { ldr.fullpage_screenshot_as(save_dir.resolve(pageID + "." + opt + ".png")); } catch(Exception e) {}
+					ldr.getWd().get(pageURL); //reload
+					//DateUtil.app_sleep(shortWait);
 				}
 			}
 			

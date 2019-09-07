@@ -32,7 +32,7 @@ public class PreSvApp {
     			break;
     		case 'l':
     			String tmp = options.getOptarg();
-    			if(tmp.equals("")) {
+    			if(!tmp.equals("")) {
     				layerd_flag = false;
     			}
     			break;
