@@ -114,18 +114,36 @@ public class LibraDriver {
 		Path save_path = save_dir.resolve(filename);
 		Files.write(save_path, sc.getScreenshotAs(OutputType.BYTES));
 	}
+	
+	//スクリーンショットを撮る（ディレクトリも指定）
+	public void screenshot_as(Path save_path) throws Exception {
+		TakesScreenshot sc = (TakesScreenshot)wd;
+		Files.write(save_path, sc.getScreenshotAs(OutputType.BYTES));
+	}
 
-	//fullpage screenshotを撮る(Firefox Only)
+	//fullpage screenshotを撮る
 	public void fullpage_screenshot(String filename) throws Exception {
 		JavascriptExecutor jsexe = (JavascriptExecutor) wd;
 		int require_height = Integer.parseInt(jsexe.executeScript("return document.body.parentNode.scrollHeight").toString());
-		//windowsサイズのheight指定はChromeでは上限がある
+		//windowsサイズのheight指定はCentOS7-Chromeでは上限がある
 		wd.manage().window().setSize(new Dimension(1280, require_height));
 		DateUtil.app_sleep(longWait);
 		TakesScreenshot sc = (TakesScreenshot) wd;
 		Path save_dir = Paths.get("screenshots");
 		Files.createDirectories(save_dir);
 		Path save_path = save_dir.resolve(filename);
+		Files.write(save_path, sc.getScreenshotAs(OutputType.BYTES));
+		wd.manage().window().setSize(new Dimension(1280, 900));
+	}
+	
+	//fullpage screenshotを撮る（ディレクトリも指定）
+	public void fullpage_screenshot_as(Path save_path) throws Exception {
+		JavascriptExecutor jsexe = (JavascriptExecutor) wd;
+		int require_height = Integer.parseInt(jsexe.executeScript("return document.body.parentNode.scrollHeight").toString());
+		//windowsサイズのheight指定はChromeでは上限がある
+		wd.manage().window().setSize(new Dimension(1280, require_height));
+		DateUtil.app_sleep(longWait);
+		TakesScreenshot sc = (TakesScreenshot) wd;
 		Files.write(save_path, sc.getScreenshotAs(OutputType.BYTES));
 		wd.manage().window().setSize(new Dimension(1280, 900));
 	}
