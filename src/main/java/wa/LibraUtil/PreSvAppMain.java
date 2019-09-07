@@ -63,8 +63,38 @@ public class PreSvAppMain {
 		List<String> qy_page_rows = new ArrayList<String>();
 		Map<String, String> new_page_rows = new TreeMap<String, String>();
 		
+		//any_pageIDが空の場合
 		if(any_pageID.equals("")) {
 			new_page_rows = page_list;
+			
+		//any_pageIDが：区切りの場合
+		} else if(TextUtil.is_colon_separate(any_pageID)) {
+			String[] tmp = any_pageID.split(":");
+			String start = tmp[0];
+			String end = tmp[1];
+			int cnt = 0;
+			List<Integer> tmpcnt = new ArrayList<Integer>();
+			for(Map.Entry<String, String> line : page_list.entrySet()) {
+				String key = line.getKey();
+				if(key.equals(start)) tmpcnt.add(cnt);
+				if(key.equals(end)) tmpcnt.add(cnt);
+				cnt++;
+			}
+			int start_cnt = tmpcnt.get(0);
+			int end_cnt = tmpcnt.get(1);
+			cnt = 0;
+			for(Map.Entry<String, String> line : page_list.entrySet()) {
+				if(cnt >= start_cnt && cnt <= end_cnt) {
+					String key = line.getKey();
+					String val = line.getValue();
+					new_page_rows.put(key, val);
+				} else {
+					continue;
+				}
+				cnt++;
+			}
+			
+		//any_pageIDが,区切りまたは単独指定の場合
 		} else {
 			if(TextUtil.is_csv(any_pageID)) {
 				List<String> tmp_arr = Arrays.asList(any_pageID.split(","));
