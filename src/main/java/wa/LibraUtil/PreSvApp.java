@@ -7,8 +7,8 @@ public class PreSvApp {
 	static String projectID = "";
 	static String any_pageID = "";
 	static String any_operation = "";
-	static String layerd_flag = "";
 	static String operationMode = "";
+	static Boolean layerd_flag = true;
 	static Boolean args_flag = true;
 
 	public static void main(String[] args) {
@@ -31,7 +31,10 @@ public class PreSvApp {
     			operationMode = options.getOptarg();
     			break;
     		case 'l':
-    			layerd_flag = options.getOptarg();
+    			String tmp = options.getOptarg();
+    			if(tmp.equals("")) {
+    				layerd_flag = false;
+    			}
     			break;
     		default:
     			break;

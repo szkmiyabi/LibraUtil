@@ -13,7 +13,7 @@ import java.util.TreeMap;
 public class PreSvAppMain {
 
 	//レポート処理実行
-	static void do_exec(String projectID, String any_pageID, String any_operation, String layerd_flag, String operationMode) {
+	static void do_exec(String projectID, String any_pageID, String any_operation, Boolean layerd_flag, String operationMode) {
 		
 		//設定ファイルの読み込み
 		String[] user_data = FileUtil.getUserProperties("user.yaml");
@@ -103,7 +103,9 @@ public class PreSvAppMain {
 				operations.add(r);
 			}
 		} else {
-			operations.add(any_operation);
+			if(!any_operation.equals("")) {
+				operations.add(any_operation);
+			}
 		}
 			
 		//PIDのループ処理
@@ -112,20 +114,39 @@ public class PreSvAppMain {
 			String pageURL = rows.getValue();
 			System.out.println(pageID + " を処理しています。(" + DateUtil.get_logtime() + ")");
 			ldr.getWd().get(pageURL);
+			//try { ldr.fullpage_screenshot_as(save_dir.resolve(pageID + ".png")); } catch (Exception e) {}
 			
-			//screenshot
-			Path save_path = save_dir.resolve(pageID + ".png");
-			try { ldr.fullpage_screenshot_as(save_path);
-			} catch (Exception e) {}
+			//operationリストのループ処理
+			for(String opt : operations) {
+				if(opt.equals("css-cut") || opt.equals("cc")) {
+					ldr.getJsExe().executeScript(JsUtil.css_cut());
+				} else if(opt.equals("document-link") || opt.equals("dl")) {
+					ldr.getJsExe().executeScript(JsUtil.document_link());
+				} else if(opt.equals("target-attr") || opt.equals("ta")) {
+					ldr.getJsExe().executeScript(JsUtil.target_attr());
+				} else if(opt.equals("image-alt") || opt.equals("ia")) {
+					ldr.getJsExe().executeScript(JsUtil.image_alt());
+				} else if(opt.equals("lang-attr") || opt.equals("la")) {
+					ldr.getJsExe().executeScript(JsUtil.lang_attr());
+				} else if(opt.equals("semantic-check") || opt.equals("sc")) {
+					ldr.getJsExe().executeScript(JsUtil.semantic_check());
+				} else if(opt.equals("tag-label-and-title-attr") || opt.equals("tl-ta")) {
+					ldr.getJsExe().executeScript(JsUtil.tag_label_and_title_attr());
+				}
+				//layerd=falseなら個別screenshot
+				if(layerd_flag == false) {
+					try { ldr.fullpage_screenshot_as(save_dir.resolve(pageID + "." + opt + ".png")); } catch(Exception e) {}
+				}
+			}
 			
-			//img-alt
-			ldr.getJsExe().executeScript(JsUtil.image_alt());
-			DateUtil.app_sleep(midWait);
-			
-			//screenshot
-			try { ldr.fullpage_screenshot_as(save_dir.resolve(pageID + ".img-alt.png"));
-			} catch (Exception e) {}
-			
+			//layerd=trueなら最後でscreenshot
+			if(layerd_flag == true) {
+				String sufix = "";
+				for(String cop : operations) {
+					sufix += cop + ".";
+				}
+				try { ldr.fullpage_screenshot_as(save_dir.resolve(pageID + "." + sufix + "png")); } catch(Exception e) {}
+			}
 			
 		}
 		
