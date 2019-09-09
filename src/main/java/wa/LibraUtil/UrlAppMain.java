@@ -6,6 +6,9 @@ import java.util.Map;
 
 public class UrlAppMain {
 
+	//basic認証フラグ
+	static Boolean basic_authenicated = false;
+	
 	//PID+URLのTSVファイル出力
 	public static void do_create_url_list(String projectID, String any_pageID, String operationMode) {
 
@@ -20,7 +23,15 @@ public class UrlAppMain {
 		String os = user_data[6];
 		String driver_type = user_data[7];
 		String headless_flag = user_data[8];
+		String guidelineLevel = user_data[9];
+		String basicAuth = user_data[10];
 		int[] appWait = {systemWait, longWait, midWait, shortWait};
+		
+		//basicAuth=yesでheadless_flag=yesの場合、退出
+		if(headless_flag.equals("yes") && basicAuth.equals("yes")) {
+			System.out.println("basicAuthオプションがyesの場合、headless_flagオプションはnoにしてください。処理を停止します。(" + DateUtil.get_logtime() + ")");
+			return;
+		}
 		
 		//LibraDriverインスタンスの生成
 		LibraDriver ldr = new LibraDriver(uid, pswd, projectID, appWait, os, driver_type, headless_flag);
@@ -53,6 +64,14 @@ public class UrlAppMain {
 		//検査開始前は検査メインページから取得
 		} else {
 			ldr.browse_sv_mainpage();
+			
+			//basic認証の処理
+			if(basicAuth.equals("yes") && basic_authenicated == false) {
+				System.out.println("basicAuthオプションが有効化されています。ログインアラートで認証を済ませた後、Enterキーを入力してください。...");
+				TextUtil.wait_enter_key();
+				basic_authenicated = true;
+			}
+
 			DateUtil.app_sleep(longWait);
 			page_list = ldr.get_page_list_data_from_sv_page();
 		}
@@ -127,7 +146,15 @@ public class UrlAppMain {
 		String os = user_data[6];
 		String driver_type = user_data[7];
 		String headless_flag = user_data[8];
+		String guidelineLevel = user_data[9];
+		String basicAuth = user_data[10];
 		int[] appWait = {systemWait, longWait, midWait, shortWait};
+		
+		//basicAuth=yesでheadless_flag=yesの場合、退出
+		if(headless_flag.equals("yes") && basicAuth.equals("yes")) {
+			System.out.println("basicAuthオプションがyesの場合、headless_flagオプションはnoにしてください。処理を停止します。(" + DateUtil.get_logtime() + ")");
+			return;
+		}
 		
 		//LibraDriverインスタンスの生成
 		LibraDriver ldr = new LibraDriver(uid, pswd, projectID, appWait, os, driver_type, headless_flag);
@@ -166,6 +193,14 @@ public class UrlAppMain {
 		//検査開始前は検査メインページから取得
 		} else {
 			ldr.browse_sv_mainpage();
+			
+			//basic認証の処理
+			if(basicAuth.equals("yes") && basic_authenicated == false) {
+				System.out.println("basicAuthオプションが有効化されています。ログインアラートで認証を済ませた後、Enterキーを入力してください。...");
+				TextUtil.wait_enter_key();
+				basic_authenicated = true;
+			}
+			
 			DateUtil.app_sleep(longWait);
 			page_list = ldr.get_page_list_data_from_sv_page();
 		}
@@ -240,7 +275,15 @@ public class UrlAppMain {
 		String os = user_data[6];
 		String driver_type = user_data[7];
 		String headless_flag = user_data[8];
+		String guidelineLevel = user_data[9];
+		String basicAuth = user_data[10];
 		int[] appWait = {systemWait, longWait, midWait, shortWait};
+		
+		//basicAuth=yesでheadless_flag=yesの場合、退出
+		if(headless_flag.equals("yes") && basicAuth.equals("yes")) {
+			System.out.println("basicAuthオプションがyesの場合、headless_flagオプションはnoにしてください。処理を停止します。(" + DateUtil.get_logtime() + ")");
+			return;
+		}
 		
 		//LibraDriverインスタンスの生成
 		LibraDriver ldr = new LibraDriver(uid, pswd, projectID, appWait, os, driver_type, headless_flag);
@@ -273,6 +316,14 @@ public class UrlAppMain {
 		//検査開始前は検査メインページから取得
 		} else {
 			ldr.browse_sv_mainpage();
+			
+			//basic認証の処理
+			if(basicAuth.equals("yes") && basic_authenicated == false) {
+				System.out.println("basicAuthオプションが有効化されています。ログインアラートで認証を済ませた後、Enterキーを入力してください。...");
+				TextUtil.wait_enter_key();
+				basic_authenicated = true;
+			}
+			
 			DateUtil.app_sleep(longWait);
 			page_list = ldr.get_page_list_data_from_sv_page();
 		}
