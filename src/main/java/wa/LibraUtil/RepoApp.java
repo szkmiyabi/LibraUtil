@@ -6,6 +6,7 @@ public class RepoApp {
 	static String projectID = "";
 	static String any_pageID = "";
 	static String any_guideline = "";
+	static String operationMode = "";
 	static Boolean reset_guideline_flag = false;
 	static Boolean show_help_flag = false;
 	static Boolean args_flag = true;
@@ -13,7 +14,7 @@ public class RepoApp {
 	public static void main(String[] args) {
 
     	//コマンドライン引数処理
-    	Getopt options = new Getopt("RepoApp", args, "ht:p:g:o:");
+    	Getopt options = new Getopt("RepoApp", args, "ht:p:g:o:m:");
     	int c;
     	while( (c = options.getopt()) != -1) {
     		switch(c) {
@@ -32,6 +33,10 @@ public class RepoApp {
     			break;
     		case 't':
     			projectID = options.getOptarg();
+    			break;
+    		case 'm':
+    			operationMode = options.getOptarg();
+    			break;
     		default:
     			break;
     		}
@@ -47,7 +52,7 @@ public class RepoApp {
     		if(!projectID.equals("")) {
     			if(TextUtil.is_projectID(projectID)) {
         			System.out.println("処理を開始します。(" + DateUtil.get_logtime() + ")");
-        			RepoAppMain.do_report(projectID, any_pageID, any_guideline);
+        			RepoAppMain.do_report(projectID, any_pageID, any_guideline, operationMode);
         			System.out.println("処理を完了します。(" + DateUtil.get_logtime() + ")");
     			} else {
     				System.out.println("不正なプロジェクトIDが指定されました。処理を中止します。");

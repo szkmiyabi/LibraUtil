@@ -48,9 +48,11 @@ public class LibraDriver {
 	private String sv_mainpage_url_base = "http://jis.infocreate.co.jp/diagnose/indexv2/index/projID/";
 	private String guideline_file_name = "guideline_datas.txt";
 	private List<List<String>> rep_data;
+	private String basic_auth_flag;
+	private Boolean basic_authenicated;
 	
 	//コンストラクタ
-	public LibraDriver(String uid, String pswd,  String projectID, int[] appWait,  String os, String driver_type, String headless_flag) {
+	public LibraDriver(String uid, String pswd,  String projectID, int[] appWait,  String os, String driver_type, String headless_flag, String basic_auth_flag) {
 		this.uid = uid;
 		this.pswd = pswd;
 		this.projectID = projectID;
@@ -62,6 +64,10 @@ public class LibraDriver {
 		//レポートデータ初期化
 		rep_data = new ArrayList<List<String>>();
 		
+		//basic認証フラグ
+		this.basic_auth_flag = basic_auth_flag;
+		basic_authenicated = false;
+
 		//driverパスの設定
 		if(os.equals("windows")) {
 			if(driver_type.equals("firefox")) {
@@ -185,6 +191,13 @@ public class LibraDriver {
 	//検査メインページ遷移
 	public void browse_sv_mainpage() {
 		wd.get(sv_mainpage_url_base + projectID);
+		
+		//basic認証の処理
+		if(basic_auth_flag.equals("yes") && basic_authenicated == false) {
+			System.out.println("basicAuthオプションが有効化されています。ログインアラートで認証を済ませた後、Enterキーを入力してください。...");
+			TextUtil.wait_enter_key();
+			basic_authenicated = true;
+		}
 	}
 	
 	//レポート詳細ページのURL生成
@@ -442,7 +455,7 @@ public class LibraDriver {
 	}
 	
 	//レポートデータ生成
-	public void fetch_report_sequential() {
+	public void fetch_report_sequential(String operationMode) {
 
 		//header
 		rep_data.add(TextUtil.get_header());
@@ -450,7 +463,19 @@ public class LibraDriver {
 		DateUtil.app_sleep(shortWait);
 		
 		List<String> guideline_rows = FileUtil.open_text_data(guideline_file_name);
-		Map<String, String> page_rows = get_page_list_data();
+		
+		//page list取得
+		Map<String, String> page_rows = null;
+		if(operationMode.equals("")) {
+			//検査開始済みの場合
+			page_rows = get_page_list_data();
+		} else {
+			//検査開始していない場合
+			browse_sv_mainpage();
+			DateUtil.app_sleep(longWait);
+			page_rows = get_page_list_data_from_sv_page();
+		}
+		
 		//guidelineのループ
 		for(int i=0; i<guideline_rows.size(); i++) {			
 			String guideline = guideline_rows.get(i);
@@ -474,7 +499,7 @@ public class LibraDriver {
 	}
 	
 	//ページIDとガイドラインIDを個別に指定してレポートデータ作成
-	public void fetch_report_single(String any_pageID, String any_guideline) {
+	public void fetch_report_single(String any_pageID, String any_guideline, String operationMode) {
 
 		wd.get(rep_index_url_base + projectID + "/");
 		DateUtil.app_sleep(shortWait);
@@ -482,7 +507,18 @@ public class LibraDriver {
 		//処理対象PIDデータの処理
 		List<String> qy_page_rows = new ArrayList<String>();
 		Map<String, String> new_page_rows = new TreeMap<String, String>();
-		Map<String, String> page_rows = get_page_list_data();
+		
+		//page listの取得
+		Map<String, String> page_rows = null;
+		if(operationMode.equals("")) {
+			//検査開始済みの場合
+			page_rows = get_page_list_data();
+		} else {
+			//検査開始していない場合
+			browse_sv_mainpage();
+			DateUtil.app_sleep(longWait);
+			page_rows = get_page_list_data_from_sv_page();
+		}
 		
 		//any_pageIDが空の場合
 		if(any_pageID == "") {

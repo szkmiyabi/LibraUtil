@@ -40,7 +40,7 @@ public class PreSvAppMain {
 		}
 				
 		//LibraDriverインスタンスの生成
-		LibraDriver ldr = new LibraDriver(uid, pswd, projectID, appWait, os, driver_type, headless_flag);
+		LibraDriver ldr = new LibraDriver(uid, pswd, projectID, appWait, os, driver_type, headless_flag, basicAuth);
 		
 		System.out.println("処理を開始します。(" + DateUtil.get_logtime() + ")");
 		
@@ -62,14 +62,6 @@ public class PreSvAppMain {
 		} else {
 			//検査開始してない場合
 			ldr.browse_sv_mainpage();
-
-			//basic認証の処理
-			if(basicAuth.equals("yes") && basic_authenicated == false) {
-				System.out.println("basicAuthオプションが有効化されています。ログインアラートで認証を済ませた後、Enterキーを入力してください。...");
-				TextUtil.wait_enter_key();
-				basic_authenicated = true;
-			}
-
 			DateUtil.app_sleep(longWait);
 			page_list = ldr.get_page_list_data_from_sv_page();
 		}
