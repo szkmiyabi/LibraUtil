@@ -34,7 +34,7 @@ public class FileUtil {
 	
 	//設定データファイルの読み込み
 	public static String[] getUserProperties(String fileName) {
-		String[] ret = new String[10];
+		String[] ret = new String[11];
 		Yaml yaml = new Yaml();
 		Map<String, Object> data = (Map<String, Object>) yaml.loadAs(readYamlFile(fileName), Map.class);
 		int i = 0;

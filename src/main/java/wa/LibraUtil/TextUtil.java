@@ -1,7 +1,10 @@
 package wa.LibraUtil;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.regex.*;
 
 public class TextUtil {
@@ -73,6 +76,23 @@ public class TextUtil {
 		Matcher mt = pt.matcher(str);
 		if(mt.find()) return true;
 		else return false;
+	}
+	
+	//キー入力を受け付ける
+	public static void wait_enter_key() {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String line = "";
+		while(true) {
+			line = _read_line(br);
+			if(line.equals("")) return;
+		}
+	}
+	private static String _read_line(BufferedReader br) {
+		String inp = "";
+		try {
+			inp = br.readLine();
+		} catch(Exception e) {}
+		return inp;
 	}
 
 }

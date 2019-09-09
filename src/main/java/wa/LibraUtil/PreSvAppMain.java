@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class PreSvAppMain {
+	
+	//basic認証フラグ
+	static Boolean basic_authenicated = false;
 
 	//レポート処理実行
 	static void do_exec(String projectID, String any_pageID, String any_operation, Boolean layerd_flag, String operationMode) {
@@ -26,8 +29,16 @@ public class PreSvAppMain {
 		String os = user_data[6];
 		String driver_type = user_data[7];
 		String headless_flag = user_data[8];
+		String guidelineLevel = user_data[9];
+		String basicAuth = user_data[10];
 		int[] appWait = {systemWait, longWait, midWait, shortWait};
 		
+		//basicAuth=yesでheadless_flag=yesの場合、退出
+		if(headless_flag.equals("yes") && basicAuth.equals("yes")) {
+			System.out.println("basicAuthオプションがyesの場合、headless_flagオプションはnoにしてください。処理を停止します。(" + DateUtil.get_logtime() + ")");
+			return;
+		}
+				
 		//LibraDriverインスタンスの生成
 		LibraDriver ldr = new LibraDriver(uid, pswd, projectID, appWait, os, driver_type, headless_flag);
 		
@@ -51,6 +62,14 @@ public class PreSvAppMain {
 		} else {
 			//検査開始してない場合
 			ldr.browse_sv_mainpage();
+
+			//basic認証の処理
+			if(basicAuth.equals("yes") && basic_authenicated == false) {
+				System.out.println("basicAuthオプションが有効化されています。ログインアラートで認証を済ませた後、Enterキーを入力してください。...");
+				TextUtil.wait_enter_key();
+				basic_authenicated = true;
+			}
+
 			DateUtil.app_sleep(longWait);
 			page_list = ldr.get_page_list_data_from_sv_page();
 		}
@@ -144,7 +163,13 @@ public class PreSvAppMain {
 			String pageURL = rows.getValue();
 			System.out.println(pageID + " を処理しています。(" + DateUtil.get_logtime() + ")");
 			ldr.getWd().get(pageURL);
-			//try { ldr.fullpage_screenshot_as(save_dir.resolve(pageID + ".png")); } catch (Exception e) {}
+			
+			//basic認証の処理
+			if(basicAuth.equals("yes") && basic_authenicated == false) {
+				System.out.println("basicAuthオプションが有効化されています。ログインアラートで認証を済ませた後、Enterキーを入力してください。...");
+				TextUtil.wait_enter_key();
+				basic_authenicated = true;
+			}
 			
 			//operationリストのループ処理
 			for(String opt : operations) {

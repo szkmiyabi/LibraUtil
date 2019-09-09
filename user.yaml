@@ -1,10 +1,11 @@
 uid: 
 pswd: 
 systemWait: 60
-longWait: 10
+longWait: 12
 midWait: 6
 shortWait: 3
 os: windows
-driver: chrome
+driver: firefox
 headless: "yes"
 guidelineLevel: AA
+basicAuth: "no"
