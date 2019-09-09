@@ -74,7 +74,6 @@ public class SrcAppMain {
 		List<String> techs = new ArrayList<String>();
 		
 		//pagesの処理
-		
 		//any_pageIDが空の場合
 		if(any_pageID.equals("")) {
 			pages = page_list;
@@ -174,9 +173,6 @@ public class SrcAppMain {
 				//guideline選択
 				ldr.select_guideline(guideline_row);
 				DateUtil.app_sleep(midWait);
-				
-				Map<String, List<String>> tmp_parent = new TreeMap<String, List<String>>();
-
 				
 				//techIDのループ処理
 				for(String tech_row : techs) {
