@@ -22,6 +22,13 @@ public class TextUtil {
 		return data;
 	}
 	
+	//:を別の文字にデコード
+	public static String colon_decode(String str, String replacer) {
+		String data = str;
+		data = Pattern.compile(":").matcher(data).replaceAll(replacer);
+		return data;
+	}
+	
 	//プロジェクトIDかどうか判定
 	public static Boolean is_projectID(String str) {
 		Pattern pt = Pattern.compile("[0-9]+");

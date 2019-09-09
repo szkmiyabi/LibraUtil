@@ -628,4 +628,22 @@ public class LibraDriver {
 		}
 
 	}
+	
+	//対象ソースコード一覧を取得
+	public List<String> get_srccode_list_from_svpage() {
+		List<String> datas = new ArrayList<String>();
+		JavascriptExecutor act = (JavascriptExecutor) wd;
+		String ret = "";
+		ret = (String)act.executeScript(JsUtil.get_srccode_list());
+		String[] lines = ret.split("<bkmk:br>");
+		for(String line : lines) {
+			datas.add(line);
+		}
+		//HCを最後に回す
+		String last_row = datas.get(0);
+		datas.remove(0);
+		datas.add(last_row);
+		return datas;
+		
+	}
 }

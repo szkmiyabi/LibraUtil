@@ -648,6 +648,24 @@ public class JsUtil {
 		jsc.append("}");
 		return jsc.toString();
 	}
+	
+	//対象ソースコード一覧を取得する
+	public static String get_srccode_list() {
+		StringBuilder jsc = new StringBuilder();
+		jsc.append("var src = document.getElementById(\"source\");");
+		jsc.append("var dch = src.childNodes;");
+		jsc.append("var str = \"\";");
+		jsc.append("for(var i=0; i<dch.length; i++){");
+		jsc.append("if(dch.item(i).id){");
+		jsc.append("var j = i + 1;");
+		jsc.append("if(dch.item(j).nodeValue != null){");
+		jsc.append("str += dch.item(j).nodeValue + \"<bkmk:br>\";");
+		jsc.append("}");
+		jsc.append("}");
+		jsc.append("}");
+		jsc.append("return str;");
+		return jsc.toString();
+	}
 
 
 }
