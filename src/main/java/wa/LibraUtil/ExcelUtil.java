@@ -185,5 +185,76 @@ public class ExcelUtil {
 		}
 		
 	}
+	
+	//Excelファイルに出力
+	public static void save_xlsx_as(List<List<String>> datas, String filename) {
+		SXSSFWorkbook wb = null;
+		SXSSFSheet sh = null;
+		FileOutputStream sw = null;
+		try {
+			
+			wb = new SXSSFWorkbook();
+			sh = wb.createSheet("Sheet1");
+			Row row;
+			Cell cell;
+			
+			//cell style
+			CellStyle s_header = wb.createCellStyle();
+			s_header.setBorderTop(BorderStyle.THIN);
+			s_header.setBorderBottom(BorderStyle.THIN);
+			s_header.setBorderLeft(BorderStyle.THIN);
+			s_header.setBorderRight(BorderStyle.THIN);
+			s_header.setAlignment(HorizontalAlignment.CENTER);
+			Font f_header = wb.createFont();
+			f_header.setBold(true);
+			s_header.setFont(f_header);
+			
+			CellStyle s_normal = wb.createCellStyle();
+			s_normal.setBorderTop(BorderStyle.THIN);
+			s_normal.setBorderBottom(BorderStyle.THIN);
+			s_normal.setBorderLeft(BorderStyle.THIN);
+			s_normal.setBorderRight(BorderStyle.THIN);
+
+			//行のループ
+			for(int i=0; i<datas.size(); i++) {
+				List<String> data_rows = datas.get(i);
+				row = sh.createRow(i);
+				
+				//列のループ
+				for(int j=0; j<data_rows.size(); j++) {
+					String col = data_rows.get(j);
+					col = fetch_overflow_characters(col);
+					
+					//cell insert
+					cell = row.createCell(j);
+					cell.setCellValue(col);
+					
+					//cell style
+					//header
+					if(i == 0) {
+						cell.setCellStyle(s_header);
+					//other
+					} else {
+						cell.setCellStyle(s_normal);
+					}
+					
+				}
+			}
+			sw = new FileOutputStream(filename);
+			wb.write(sw);
+				
+			
+		} catch(Exception e) {
+			//Errorメッセージ
+			System.out.println("Runtime Error: \n" + e.getMessage());
+		} finally {
+			if(sw != null) {
+				try { sw.close(); } catch(Exception e) {}
+			}
+			if(wb != null) {
+				try { ((SXSSFWorkbook) wb).dispose(); } catch(Exception e) {}
+			}
+		}
+	}
 
 }

@@ -42,6 +42,9 @@ public class UrlApp {
     		//PID＋URLのTSVファイル出力
     		if(operationName.equals("")) {
     			UrlAppMain.do_create_url_list(projectID, any_pageID, operationMode);
+    		//PID+URLのExcelファイル出力
+    		} else if(operationName.equals("excel")) {
+    			UrlAppMain.do_create_url_list_as_excel(projectID, any_pageID, operationMode);
     		//PIDのみTEXTファイル出力
     		} else {
     			UrlAppMain.do_create_pid_list(projectID, any_pageID, operationMode);
