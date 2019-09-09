@@ -157,10 +157,11 @@ public class PreSvAppMain {
 			ldr.getWd().get(pageURL);
 			
 			//basic認証の処理
-			if(basicAuth.equals("yes") && basic_authenicated == false) {
+			if(basicAuth.equals("yes") && (basic_authenicated == false || ldr.getBasicAuthenicated() == false)) {
 				System.out.println("basicAuthオプションが有効化されています。ログインアラートで認証を済ませた後、Enterキーを入力してください。...");
 				TextUtil.wait_enter_key();
-				basic_authenicated = true;
+				if(!basic_authenicated) basic_authenicated = true;
+				if(!ldr.getBasicAuthenicated()) ldr.setBasicAuthenicated(true);
 			}
 			
 			//operationリストのループ処理

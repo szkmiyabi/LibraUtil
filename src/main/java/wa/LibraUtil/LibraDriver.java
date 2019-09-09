@@ -118,6 +118,16 @@ public class LibraDriver {
 		return rep_data;
 	}
 	
+	//basic認証済みフラグのゲッター
+	public Boolean getBasicAuthenicated() {
+		return basic_authenicated;
+	}
+	
+	//basic認証済みフラグのセッター
+	public void setBasicAuthenicated(Boolean flag) {
+		basic_authenicated = flag;
+	}
+	
 	//スクリーンショットを取る
 	public void screenshot(String filename) throws Exception {
 		TakesScreenshot sc = (TakesScreenshot)wd;
