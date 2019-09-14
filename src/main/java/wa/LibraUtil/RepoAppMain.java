@@ -41,15 +41,24 @@ public class RepoAppMain {
 		ldr.browse_repo();
 		DateUtil.app_sleep(shortWait);
 		
+		//サイト名
+		String site_name = ldr.get_site_name();
+		
+		//Excelファイル名の処理
+		String save_filename = projectID + "_" + site_name + "_";
+		
+		if(any_pageID == "") save_filename += "ALL-PG_";
+		else save_filename += TextUtil.colon_decode(any_pageID, " ") + "_";
+		if(any_guideline == "") save_filename += "ALL-GD_";
+		else save_filename += TextUtil.colon_decode(any_guideline, "") + "_";
+		
 		//条件分岐
 		if(any_pageID == "" && any_guideline == "") {
 			//全レポート処理
-			ldr.fetch_report_sequential(operationMode);
-			
+			ldr.fetch_report_sequential(operationMode);			
 		} else {
 			//範囲指定レポート処理
 			ldr.fetch_report_single(any_pageID, any_guideline, operationMode);
-			
 		}
 
 		//ログアウト
@@ -59,7 +68,8 @@ public class RepoAppMain {
 		
 		List<List<String>> rep_data = ldr.getRepData();
 		System.out.println("Excel書き出し処理に移ります。(" + DateUtil.get_logtime() + ")");
-		ExcelUtil.repo_app_save_xlsx(rep_data);
+		save_filename += DateUtil.fetch_filename_logtime() + ".xlsx";
+		ExcelUtil.repo_app_save_xlsx(rep_data, save_filename);
 		System.out.println("Excel書き出し処理が完了しました。(" + DateUtil.get_logtime() + ")");
 		
 	}

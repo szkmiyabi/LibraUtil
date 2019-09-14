@@ -40,11 +40,10 @@ public class ExcelUtil {
 
 
 	//Excelファイルに出力(RepoApp)
-	public static void repo_app_save_xlsx(List<List<String>> datas) {
+	public static void repo_app_save_xlsx(List<List<String>> datas, String filename) {
 		SXSSFWorkbook wb = null;
 		SXSSFSheet sh = null;
 		FileOutputStream sw = null;
-		String filename = DateUtil.fetch_filename_from_datetime("xlsx");
 		
 		try {
 			wb = new SXSSFWorkbook();
