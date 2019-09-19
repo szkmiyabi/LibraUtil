@@ -36,12 +36,6 @@ public class SrcAppMain {
 			return;
 		}
 		
-		//headless_flag=yesの場合も退出
-		if(headless_flag.equals("yes")) {
-			System.out.println("headless_flagオプションはnoにしてください。処理を停止します。(" + DateUtil.get_logtime() + ")");
-			return;
-		}
-		
 		//LibraDriverインスタンスの生成
 		LibraDriver ldr = new LibraDriver(uid, pswd, projectID, appWait, os, driver_type, headless_flag, basicAuth);
 		
@@ -60,7 +54,17 @@ public class SrcAppMain {
 		//サイト名
 		String site_name = ldr.get_site_name();
 		//サイト名
-		String save_filename = projectID + "_" + site_name + "_" + TextUtil.colon_decode(any_pageID, " ") + "_" + TextUtil.colon_decode(any_guideline, " ") + "_" + TextUtil.colon_decode(any_techID, " ") + ".xlsx";
+		String save_filename = projectID + "_" + site_name + "_";
+		
+		if(any_pageID == "") save_filename += "ALL-PG_";
+		else save_filename += TextUtil.colon_decode(any_pageID, " ") + "_";
+		
+		save_filename += TextUtil.colon_decode(any_guideline, " ") + "_";
+		
+		if(any_techID == "") save_filename += "ALL-TEC_";
+		else save_filename += TextUtil.colon_decode(any_techID, " ");
+		
+		save_filename += ".xlsx";
 		
 		//Mapデータ取得
 		ldr.browse_sv_mainpage();
@@ -126,6 +130,9 @@ public class SrcAppMain {
 			}
 			if(pages.size() < 1) {
 				System.out.println("-p オプションで指定したPIDが存在しません。処理を停止します。");
+				ldr.logout();
+				DateUtil.app_sleep(shortWait);
+				ldr.shutdown();
 				return;
 			}
 		}
@@ -139,13 +146,26 @@ public class SrcAppMain {
 		} else {
 			guidelines.add(any_guideline);
 		}
+		if(guidelines.size() < 1) {
+			System.out.println("-g オプションでガイドライン番号が指定されていません。処理を停止します。");
+			ldr.logout();
+			DateUtil.app_sleep(shortWait);
+			ldr.shutdown();
+			return;
+		}
 		
 		//techIDの処理
-		if(TextUtil.is_csv(any_techID)) {
+		
+		//techIDが空かつguidelineが単一指定なら全techID自動取得
+		if(any_techID.equals("") && guidelines.size() == 1) {
+			techs = ldr.get_tech_list_data_by_guideline(guidelines.get(0));
+		//,区切りならsplitする
+		} else if(TextUtil.is_csv(any_techID)) {
 			String[] tmp = any_techID.split(",");
 			for(String r : tmp) {
 				techs.add(r);
 			}
+		//それ以外
 		} else {
 			techs.add(any_techID);
 		}

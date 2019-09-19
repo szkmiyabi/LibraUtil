@@ -414,6 +414,27 @@ public class LibraDriver {
 		return ret;
 	}
 	
+	//実装番号一覧データ生成
+	public List<String> get_tech_list_data_by_guideline(String guideline) {
+		String current_url = wd.getCurrentUrl();
+		List<String> datas = new ArrayList<String>();
+		browse_sv_mainpage();
+		DateUtil.app_sleep(longWait);
+		select_guideline(guideline);
+		DateUtil.app_sleep(longWait);
+		WebElement tech_ddl = wd.findElement(By.id("techList"));
+		List<WebElement> opts = tech_ddl.findElements(By.tagName("option"));
+		for(int i=0; i<opts.size(); i++) {
+			WebElement opt = opts.get(i);
+			String tech = opt.getAttribute("value");
+			if(tech.equals("")) continue;
+			datas.add(tech);
+		}
+		wd.get(current_url);
+		DateUtil.app_sleep(midWait);
+		return datas;
+	}
+	
 	//レポート詳細ページから検査結果データを生成
 	List<List<String>> get_detail_table_data(String pageID, String pageURL, String guideline) {
 		List<List<String>> datas = new ArrayList<List<String>>();
