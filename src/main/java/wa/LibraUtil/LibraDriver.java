@@ -3,6 +3,7 @@ package wa.LibraUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.io.IOException;
@@ -41,6 +42,7 @@ public class LibraDriver {
 	private String driver_path;
 	private String uid;
 	private String pswd;
+	private String windowID;
 	private String app_url = "https://accessibility.jp/libra/";
 	private String index_url = "https://jis.infocreate.co.jp/";
 	private String rep_index_url_base = "http://jis.infocreate.co.jp/diagnose/indexv2/report/projID/";
@@ -99,6 +101,7 @@ public class LibraDriver {
 		wd.manage().timeouts().implicitlyWait(systemWait, TimeUnit.SECONDS);
 		wd.manage().window().setSize(new Dimension(1280, 900));
 		wd.get(app_url);
+		windowID = wd.getWindowHandle();
 		
 	}
 	
@@ -353,6 +356,27 @@ public class LibraDriver {
 			sname = mt.group(5);
 		}
 		return sname;
+	}
+	
+	//一括検査画面を表示する
+	public void browse_all_sv_page() {
+		wd.findElement(By.xpath("//*[@id='all_btn']/button")).click();
+		DateUtil.app_sleep(longWait);
+		Set<String> windowIDS = wd.getWindowHandles();
+		List<String> windowIDSArray = new ArrayList(windowIDS);
+		for(String row : windowIDSArray) {
+			if(!row.equals(windowID)) {
+				wd.switchTo().window(row);
+				break;
+			}
+		}
+	}
+	
+	//一括検査画面を退出する
+	public void leave_all_sv_page() {
+		wd.findElement(By.id("close_diag_form")).click();
+		wd.switchTo().window(windowID);
+		DateUtil.app_sleep(midWait);
 	}
 	
 	//PID一覧＋URL一覧データ生成
@@ -650,7 +674,7 @@ public class LibraDriver {
 
 	}
 	
-	//対象ソースコード一覧を取得
+	//対象ソースコード一覧を取得(検査メインページから)
 	public List<String> get_srccode_list_from_svpage() {
 		List<String> datas = new ArrayList<String>();
 		JavascriptExecutor act = (JavascriptExecutor) wd;
@@ -667,4 +691,22 @@ public class LibraDriver {
 		return datas;
 		
 	}
+	
+	//対象ソースコード一覧を取得(一括検査画面から)
+	public List<String> get_srccode_list_from_allsv_page() {
+		//一括検査画面出す
+		browse_all_sv_page();
+		List<String> datas = new ArrayList<String>();
+		JavascriptExecutor act = (JavascriptExecutor) wd;
+		String ret = "";
+		ret = (String)act.executeScript(JsUtil.get_srccode_list_from_all_sv());
+		String[] lines = ret.split("<bkmk:br>");
+		for(String line : lines) {
+			datas.add(line);
+		}
+		//一括検査画面閉じる
+		leave_all_sv_page();
+		return datas;
+	}
+
 }

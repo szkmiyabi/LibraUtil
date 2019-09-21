@@ -206,8 +206,8 @@ public class SrcAppMain {
 					DateUtil.app_sleep(shortWait);
 					
 					System.out.println(pageID + "," + guideline_row + "," + tech_row + " を処理しています。(" + DateUtil.get_logtime() + ")");
-					List<String> src_lines = ldr.get_srccode_list_from_svpage();
-					
+					List<String> src_lines = ldr.get_srccode_list_from_allsv_page();
+
 					//srccodeリストのループ処理
 					for(String tmp_line : src_lines) {
 						List<String> tmp_row = new ArrayList<String>();
