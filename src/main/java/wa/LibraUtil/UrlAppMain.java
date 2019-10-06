@@ -93,8 +93,6 @@ public class UrlAppMain {
 					tmp_row.add(key);
 					tmp_row.add(val);
 					datas.add(tmp_row);
-				} else {
-					continue;
 				}
 				cnt++;
 			}

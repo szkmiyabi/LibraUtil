@@ -99,8 +99,6 @@ public class PreSvAppMain {
 					String key = line.getKey();
 					String val = line.getValue();
 					new_page_rows.put(key, val);
-				} else {
-					continue;
 				}
 				cnt++;
 			}

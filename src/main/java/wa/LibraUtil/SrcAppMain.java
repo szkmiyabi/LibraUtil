@@ -103,8 +103,6 @@ public class SrcAppMain {
 					String key = line.getKey();
 					String val = line.getValue();
 					pages.put(key, val);
-				} else {
-					continue;
 				}
 				cnt++;
 			}
