@@ -585,6 +585,7 @@ public class LibraDriver {
 			String[] tmp = any_pageID.split(":");
 			String start = tmp[0];
 			String end = tmp[1];
+			
 			int cnt = 0;
 			List<Integer> tmpcnt = new ArrayList<Integer>();
 			for(Map.Entry<String, String> line : page_rows.entrySet()) {
@@ -595,14 +596,13 @@ public class LibraDriver {
 			}
 			int start_cnt = tmpcnt.get(0);
 			int end_cnt = tmpcnt.get(1);
+			
 			cnt = 0;
 			for(Map.Entry<String, String> line : page_rows.entrySet()) {
-				if(cnt >= start_cnt && cnt <= end_cnt) {
+				if(cnt >= start_cnt && cnt <= end_cnt) {					
 					String key = line.getKey();
 					String val = line.getValue();
 					new_page_rows.put(key, val);
-				} else {
-					continue;
 				}
 				cnt++;
 			}
