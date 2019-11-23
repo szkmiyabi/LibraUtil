@@ -1,6 +1,7 @@
 package wa.LibraUtil;
 
 import java.util.Properties;
+import java.util.TreeMap;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -63,6 +64,27 @@ public class FileUtil {
 		} catch(Exception ex) {}
 
 		return ret;
+	}
+	
+	//PID+URLのTSVデータをMapとして読み込み
+	public static Map<String, String> open_tsv_data(String filename) {
+		Map<String, String> datas = new TreeMap<String, String>();
+		try {
+			FileInputStream is = new FileInputStream(filename);
+			InputStreamReader in = new InputStreamReader(is, "UTF-8");
+			BufferedReader br = new BufferedReader(in);
+			String row = "";
+			while((row = br.readLine()) != null) {
+				String[] cols = row.split("\t", 0);
+				String key = cols[0];
+				String val = cols[1];
+				datas.put(key, val);
+			}
+			br.close();
+			is.close();
+		} catch(Exception ex) {}
+		
+		return datas;
 	}
 
 	//ガイドラインファイルをリセット
